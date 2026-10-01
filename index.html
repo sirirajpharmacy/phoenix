@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phoenix Training – ฝ่ายเภสัชกรรม ศิริราช</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1d2b45; --ink-2:#3b4a66; --muted:#6b7890; --line:#dde3ec;
+  --paper:#f2f5f9; --card:#ffffff; --gold:#e6a019; --gold-soft:#fdf3dc;
+  --done:#157a5a; --done-soft:#e2f4ec; --todo:#b3312b; --todo-soft:#fbe7e5;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:'IBM Plex Sans Thai',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;font-size:16px;line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.wrap.wide{max-width:1200px}
+
+/* header */
+.bar{background:var(--ink);color:#fff}
+.bar .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px}
+.brand{font-weight:700;letter-spacing:.2px;flex:1;min-width:0}
+.brand small{display:block;font-weight:400;opacity:.75;font-size:13px}
+.brand .flame{color:var(--gold)}
+.bar button{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:14px;white-space:nowrap}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--ink)}
+.login .box{width:100%;max-width:380px;color:#fff}
+.login h1{font-size:34px;line-height:1.15;margin:0 0 6px}
+.login h1 span{color:var(--gold)}
+.login p{margin:0 0 28px;opacity:.8}
+.login label{display:block;font-size:14px;margin-bottom:6px;opacity:.85}
+.login input{width:100%;padding:14px;border-radius:var(--radius);border:0;font-size:20px;letter-spacing:1px;color:var(--ink)}
+.login .btn{width:100%;margin-top:14px}
+.login .alt{display:block;margin-top:28px;text-align:center;color:#fff;opacity:.6;font-size:14px}
+
+.btn{background:var(--gold);color:var(--ink);border:0;border-radius:var(--radius);padding:12px 18px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.danger{background:var(--todo);color:#fff}
+.btn.sm{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* home */
+.hello{padding:20px 0 8px}
+.hello h2{margin:0;font-size:22px}
+.hello .sub{color:var(--muted);font-size:14px}
+.progress{margin:14px 0 6px;display:flex;align-items:baseline;gap:10px}
+.progress b{font-size:30px}
+.meter{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--done)}
+.group{margin-top:26px}
+.group h3{font-size:15px;color:var(--muted);font-weight:600;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.topic{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px;margin-bottom:10px;cursor:pointer}
+.topic:hover{border-color:var(--ink-2)}
+.code{flex:none;width:58px;height:58px;border-radius:8px;background:var(--ink);color:var(--gold);display:grid;place-items:center;font-weight:700;font-size:17px}
+.topic .t{flex:1;min-width:0}
+.topic .t b{display:block;font-weight:600;line-height:1.35}
+.topic .t span{font-size:13px;color:var(--muted)}
+.pill{flex:none;font-size:13px;padding:3px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+.pill.done{background:var(--done-soft);color:var(--done)}
+.pill.todo{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);padding:28px;text-align:center;color:var(--muted)}
+
+/* topic page */
+.back{background:none;border:0;color:var(--ink-2);padding:12px 0;cursor:pointer;font-weight:600}
+.th{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.th h2{margin:0;font-size:21px;line-height:1.35}
+.th .meta{color:var(--muted);font-size:14px}
+.video{position:relative;padding-top:56.25%;background:#000;border-radius:var(--radius);overflow:hidden}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.novideo{background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);padding:40px 16px;text-align:center;color:var(--muted)}
+.section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:14px}
+.section h4{margin:0 0 8px;font-size:15px}
+.pre{white-space:pre-wrap}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.actions a{display:block;text-align:center;text-decoration:none}
+.scores{display:flex;gap:10px;margin-top:10px}
+.score{flex:1;background:var(--gold-soft);border-radius:8px;padding:10px;text-align:center}
+.score b{display:block;font-size:24px}
+.score span{font-size:13px;color:var(--ink-2)}
+
+/* admin */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 16px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;cursor:pointer;font-weight:600;color:var(--muted);white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--gold)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.filters select,.filters input[type=search]{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.filters label{font-size:14px;display:flex;gap:6px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.stat b{font-size:26px;display:block;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f7f9fc;font-weight:600;white-space:nowrap;position:sticky;top:0}
+td.c,th.c{text-align:center}
+td.ok{background:var(--done-soft);color:var(--done);font-weight:600;text-align:center}
+td.no{background:var(--todo-soft);color:var(--todo);text-align:center}
+td.na{color:#c3cad6;text-align:center}
+td small{display:block;font-weight:400;color:var(--ink-2);font-size:12px}
+.matrix td:first-child,.matrix th:first-child{position:sticky;left:0;background:var(--card);z-index:1;min-width:190px}
+.matrix th:first-child{background:#f7f9fc;z-index:2}
+h3.sec{font-size:16px;margin:6px 0 10px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .full{grid-column:1/-1}
+.form label{font-size:14px;font-weight:600;display:block;margin-bottom:4px}
+.form input[type=text],.form input[type=number],.form input[type=date],.form textarea,.form select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.form textarea{min-height:90px;resize:vertical}
+.hint{font-size:12px;color:var(--muted);font-weight:400}
+.checks{display:flex;flex-wrap:wrap;gap:16px}
+.checks label{font-weight:400;display:flex;gap:6px;align-items:center}
+.rrow{display:grid;grid-template-columns:70px 1fr 1fr 40px;gap:8px;margin-bottom:8px;align-items:center}
+.rrow input{padding:8px;border:1px solid var(--line);border-radius:8px;width:100%}
+.rrow button{background:none;border:1px solid var(--line);border-radius:8px;height:38px;cursor:pointer}
+.rowbtn{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.scoreinput{width:80px;padding:6px;border:1px solid var(--line);border-radius:6px}
+.scoreinput.changed{border-color:var(--gold);background:var(--gold-soft)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--paper);border:1px solid var(--line);margin-right:4px}
+.tag.off{background:var(--todo-soft);border-color:transparent;color:var(--todo)}
+textarea.ids{width:100%;min-height:120px;padding:10px;border:1px solid var(--line);border-radius:8px;font-family:inherit}
+
+/* busy + toast */
+#busy{position:fixed;inset:0;background:rgba(242,245,249,.55);display:none;place-items:center;z-index:50}
+#busy.on{display:grid}
+#busy i{width:34px;height:34px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--ink);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;
+  font-size:14px;max-width:90vw;display:none;z-index:60}
+#toast.err{background:var(--todo)}
+#toast.on{display:block}
+@media (max-width:600px){ .form{grid-template-columns:1fr} .wrap{padding:12px} }
+@media (prefers-reduced-motion:reduce){ #busy i{animation:none} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="busy"><i></i></div>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ใส่ลิงก์ Web app ของ Apps Script (ลงท้ายด้วย /exec) */
+const API_URL = 'https://script.google.com/macros/s/AKfycbw4HlbPzJsrOYtEpW1nDcOhcvDbGLvI3_D1UKBQte5Umkdt7RAqebuLLa0Wn6B-A-Ze/exec';
+
+const S = { userToken:null, adminToken:null, admin:null, tab:'dash',
+            f:{role:'',unit:'',group:'',q:'',incomplete:false}, scoreCode:'', attCode:'', attRound:'', preview:null };
+const ROLES = ['Pharmacist','Pharmacy Assistant','Staff'];
+const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const app = document.getElementById('app');
+
+/* ---------- utils ---------- */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function store(k,v){ try{ v==null ? localStorage.removeItem(k) : localStorage.setItem(k,v); }catch(e){} }
+function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function fmtDate(iso){ const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? (+m[3])+' '+TH_M[+m[2]-1]+' '+m[1] : (iso||'ยังไม่กำหนดวันที่'); }
+function num(v){ const n=parseFloat(String(v==null?'':v)); return isNaN(n)?null:n; }
+function avg(a){ const b=a.filter(x=>x!==null); return b.length ? (b.reduce((s,x)=>s+x,0)/b.length).toFixed(1) : '–'; }
+function toast(msg,err){ const t=document.getElementById('toast'); t.textContent=msg; t.className='on'+(err?' err':''); clearTimeout(toast.h); toast.h=setTimeout(()=>t.className='',err?5000:2500); }
+let busyN=0;
+function busy(on){ busyN+=on?1:-1; document.getElementById('busy').className = busyN>0?'on':''; }
+
+async function api(fn, ...args){
+  busy(true);
+  let res;
+  try{
+    // credentials:'omit' = ไม่ส่งบัญชี Google ที่ login ค้างในเบราว์เซอร์ จึงไม่ติดปัญหาหลายบัญชี
+    const r = await fetch(API_URL, { method:'POST', credentials:'omit', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({fn, args}) });
+    res = await r.json();
+  }catch(e){
+    busy(false);
+    toast('เชื่อมต่อระบบไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง', true);
+    return null;
+  }
+  busy(false);
+  if (res && res.ok) return res.data;
+  const msg = String((res && res.error) || 'เกิดข้อผิดพลาด').replace(/^Error:\s*/,'');
+  if (msg.indexOf('SESSION')>-1){
+    if (fn.indexOf('admin')===0){ S.adminToken=null; store('ph_admin',null); toast('หมดเวลาใช้งาน กรุณาเข้าสู่ระบบใหม่',true); showAdminLogin(); }
+    else { S.userToken=null; store('ph_user',null); toast('หมดเวลาใช้งาน กรุณาเข้าสู่ระบบใหม่',true); showLogin(); }
+  } else toast(msg,true);
+  return null;
+}
+
+/* ---------- user: login ---------- */
+function showLogin(){
+  app.innerHTML = `
+  <div class="login"><form class="box" id="lf">
+    <h1>Phoenix<br><span>Intericare</span></h1>
+    <p>วิดีโออบรมย้อนหลัง ฝ่ายเภสัชกรรม โรงพยาบาลศิริราช</p>
+    <label for="sap">SAP ID หรือรหัสพนักงาน</label>
+    <input id="sap" inputmode="numeric" autocomplete="off" required>
+    <button class="btn" type="submit">เข้าสู่ระบบ</button>
+  </form></div>`;
+  document.getElementById('sap').focus();
+  document.getElementById('lf').onsubmit = async e=>{
+    e.preventDefault();
+    const r = await api('userLogin', document.getElementById('sap').value);
+    if (!r) return;
+    S.userToken=r.token; store('ph_user',r.token); openHome();
+  };
+}
+
+function userBar(){
+  return `<div class="bar"><div class="wrap"><div class="brand">Phoenix <span class="flame">Intericare</span><small>วิดีโออบรมย้อนหลัง</small></div>
+    <button id="logout">ออกจากระบบ</button></div></div>`;
+}
+function bindLogout(){ document.getElementById('logout').onclick=()=>{ S.userToken=null; store('ph_user',null); showLogin(); }; }
+
+/* ---------- user: home ---------- */
+async function openHome(){
+  const d = await api('userHome', S.userToken);
+  if (!d) return;
+  const total=d.topics.length, done=d.topics.filter(t=>t.viewed).length;
+  const groups=[]; const byG={};
+  d.topics.forEach(t=>{ const g=t.group||'หัวข้ออื่น ๆ'; if(!byG[g]){byG[g]=[];groups.push(g);} byG[g].push(t); });
+  app.innerHTML = userBar() + `<div class="wrap">
+    <div class="hello"><h2>${esc(d.user.name)}</h2><div class="sub">${esc(d.user.position)} · SAP ${esc(d.user.id)}</div>
+      <div class="progress"><b>${done}/${total}</b><span>หัวข้อที่ดูแล้ว</span></div>
+      <div class="meter"><i style="width:${total?Math.round(done*100/total):0}%"></i></div></div>
+    ${ total ? groups.map(g=>`<div class="group"><h3>${esc(g)}</h3>${byG[g].map(t=>`
+      <button class="topic" data-code="${esc(t.code)}"><span class="code">${esc(t.code)}</span>
+        <span class="t"><b>${esc(t.title)}</b><span>${esc(t.speaker)}${t.hasVideo?'':' · ยังไม่มีวิดีโอ'}</span></span>
+        <span class="pill ${t.viewed?'done':'todo'}">${t.viewed?'ดูแล้ว':'ยังไม่ดู'}</span></button>`).join('')}</div>`).join('')
+      : '<div class="empty" style="margin-top:24px">ยังไม่มีหัวข้อที่คุณมีสิทธิ์ดู</div>' }
+  </div>`;
+  bindLogout();
+  app.querySelectorAll('.topic').forEach(b=>b.onclick=()=>openTopic(b.dataset.code));
+  window.scrollTo(0,0);
+}
+
+/* ---------- user: topic ---------- */
+async function openTopic(code){
+  const d = await api('userTopic', S.userToken, code);
+  if (!d) return;
+  const acts=[];
+  if (d.doc)  acts.push(`<a class="btn ghost" href="${esc(d.doc)}" target="_blank" rel="noopener">เปิดเอกสารประกอบ</a>`);
+  if (d.pre)  acts.push(`<a class="btn ghost" href="${esc(d.pre)}" target="_blank" rel="noopener">ทำ Pre-test</a>`);
+  if (d.post) acts.push(`<a class="btn" href="${esc(d.post)}" target="_blank" rel="noopener">ทำ Post-test</a>`);
+  const sc=[];
+  if (d.preScore)  sc.push(`<div class="score"><b>${esc(d.preScore)}</b><span>คะแนน Pre-test</span></div>`);
+  if (d.postScore) sc.push(`<div class="score"><b>${esc(d.postScore)}</b><span>คะแนน Post-test</span></div>`);
+  app.innerHTML = userBar() + `<div class="wrap">
+    <button class="back" id="back">‹ กลับไปหน้ารายการ</button>
+    <div class="th"><span class="code">${esc(d.code)}</span><div><h2>${esc(d.title)}</h2>
+      <div class="meta">${esc(d.group)}${d.speaker?' · วิทยากร '+esc(d.speaker):''}</div></div></div>
+    ${ d.videoId ? `<div class="video"><iframe src="https://www.youtube.com/embed/${esc(d.videoId)}?rel=0&playsinline=1"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(d.title)}"></iframe></div>`
+      : '<div class="novideo">ยังไม่มีวิดีโอสำหรับหัวข้อนี้</div>' }
+    ${ acts.length ? `<div class="actions">${acts.join('')}</div>` : '' }
+    ${ sc.length ? `<div class="section"><h4>คะแนนของคุณ</h4><div class="scores">${sc.join('')}</div></div>` : '' }
+    ${ d.description ? `<div class="section"><h4>คำอธิบาย</h4><div class="pre">${esc(d.description)}</div></div>` : '' }
+    ${ d.subtopics ? `<div class="section"><h4>หัวข้อที่บรรยาย</h4><div class="pre">${esc(d.subtopics)}</div></div>` : '' }
+    ${ d.rounds.length ? `<div class="section"><h4>รอบอบรมสด</h4>${d.rounds.map(r=>`<div>รอบ ${r.round}: ${esc(fmtDate(r.date))}${r.time?' เวลา '+esc(r.time):''}</div>`).join('')}</div>` : '' }
+  </div>`;
+  bindLogout();
+  document.getElementById('back').onclick=openHome;
+  window.scrollTo(0,0);
+}
+
+/* ---------- admin: login ---------- */
+function showAdminLogin(){
+  app.innerHTML = `
+  <div class="login"><form class="box" id="af">
+    <h1>Phoenix<br><span>ผู้ดูแลระบบ</span></h1>
+    <p>ใช้รหัสตามระดับของคุณ</p>
+    <label for="pw">รหัสผู้ดูแลระบบ</label>
+    <input id="pw" type="password" autocomplete="current-password" required>
+    <button class="btn" type="submit">เข้าสู่หน้าผู้ดูแล</button>
+    <a class="alt" href="#" id="toUser">กลับไปหน้าผู้ใช้</a>
+  </form></div>`;
+  document.getElementById('pw').focus();
+  document.getElementById('af').onsubmit = async e=>{
+    e.preventDefault();
+    const r = await api('adminLogin', document.getElementById('pw').value);
+    if (!r) return;
+    S.adminToken=r.token; store('ph_admin',r.token); S.tab='dash'; openAdmin();
+  };
+  document.getElementById('toUser').onclick = e=>{ e.preventDefault(); S.userToken ? openHome() : showLogin(); };
+}
+
+async function openAdmin(){
+  const d = await api('adminData', S.adminToken);
+  if (!d) return;
+  S.admin=d;
+  if (d.level==='viewer') S.tab='dash';
+  renderAdmin();
+}
+
+function canEdit(){ return S.admin && S.admin.level!=='viewer'; }
+
+function renderAdmin(){
+  const A=S.admin;
+  const tabs=[['dash','Dashboard']];
+  if (canEdit()) tabs.push(['topics','หัวข้อ'],['scores','คะแนน'],['attend','รอบสด']);
+  app.innerHTML = `<div class="bar"><div class="wrap wide"><div class="brand">Phoenix <span class="flame">Admin</span><small>${esc(A.levelName)}</small></div>
+      <button id="refresh">รีเฟรช</button><button id="alogout">ออกจากระบบ</button></div></div>
+    <div class="wrap wide"><div class="tabs">${tabs.map(t=>`<button data-t="${t[0]}" class="${S.tab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>
+    <div id="pane"></div></div>`;
+  document.getElementById('refresh').onclick=openAdmin;
+  document.getElementById('alogout').onclick=()=>{ S.adminToken=null; store('ph_admin',null); showAdminLogin(); };
+  app.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{ S.tab=b.dataset.t; renderAdmin(); });
+  ({dash:renderDash, topics:renderTopics, scores:renderScores, attend:renderAttend})[S.tab]();
+}
+
+/* ---------- shared calc ---------- */
+function eligible(u,t,needPublished){ if(needPublished!==false && !t.published) return false; return !!t.roles[u.role] || u.extra.indexOf(t.code)>-1; }
+function viewsOf(id,code){ return ((S.admin.views[id]||{})[code])||0; }
+function attOf(id,code){ return ((S.admin.attended[id]||{})[code])||[]; }
+function viewed(id,code){ return viewsOf(id,code)>0 || attOf(id,code).length>0; }
+function scoreOf(id,code){ return ((S.admin.scores[id]||{})[code])||{pre:'',post:''}; }
+function topicByCode(c){ return S.admin.topics.find(t=>t.code===c); }
+function uniq(a){ return [...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y,'th')); }
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  const A=S.admin, f=S.f;
+  const units=uniq(A.users.map(u=>u.unit)), groups=uniq(A.topics.filter(t=>t.published).map(t=>t.group));
+  const opt=(list,val,all)=>`<option value="">${all}</option>`+list.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('');
+  document.getElementById('pane').innerHTML = `
+    <div class="filters">
+      <select id="fRole">${opt(ROLES,f.role,'ทุก Role')}</select>
+      <select id="fUnit">${opt(units,f.unit,'ทุกหน่วยงาน')}</select>
+      <select id="fGroup">${opt(groups,f.group,'ทุกกลุ่มหัวข้อ')}</select>
+      <input type="search" id="fQ" placeholder="ค้นหาชื่อหรือ SAP ID" value="${esc(f.q)}">
+      <label><input type="checkbox" id="fInc" ${f.incomplete?'checked':''}> เฉพาะคนที่ยังดูไม่ครบ</label>
+      <span style="flex:1"></span>
+      <button class="btn sm" id="exp">Export Excel</button>
+    </div><div id="dashBody"></div>`;
+  const upd=()=>{ f.role=fRole.value; f.unit=fUnit.value; f.group=fGroup.value; f.q=fQ.value.trim(); f.incomplete=fInc.checked; dashBody(); };
+  ['fRole','fUnit','fGroup','fInc'].forEach(id=>document.getElementById(id).onchange=upd);
+  document.getElementById('fQ').oninput=upd;
+  document.getElementById('exp').onclick=exportExcel;
+  dashBody();
+}
+
+function dashRows(){
+  const A=S.admin, f=S.f;
+  const topics=A.topics.filter(t=>t.published && (!f.group || t.group===f.group));
+  const q=f.q.toLowerCase();
+  let rows=A.users.filter(u=>(!f.role||u.role===f.role)&&(!f.unit||u.unit===f.unit)&&(!q||u.name.toLowerCase().indexOf(q)>-1||u.id.indexOf(q)>-1))
+    .map(u=>{ const el=topics.filter(t=>eligible(u,t)); return {u, el, done:el.filter(t=>viewed(u.id,t.code)).length}; });
+  if (f.incomplete) rows=rows.filter(r=>r.el.length && r.done<r.el.length);
+  return {topics, rows};
+}
+
+function dashBody(){
+  const {topics, rows}=dashRows();
+  const withTopics=rows.filter(r=>r.el.length);
+  const totEl=withTopics.reduce((s,r)=>s+r.el.length,0), totDone=withTopics.reduce((s,r)=>s+r.done,0);
+  const totViews=rows.reduce((s,r)=>s+r.el.reduce((a,t)=>a+viewsOf(r.u.id,t.code),0),0);
+  const full=withTopics.filter(r=>r.done===r.el.length).length;
+
+  const tRows=topics.map(t=>{
+    const el=rows.filter(r=>eligible(r.u,t)); const dn=el.filter(r=>viewed(r.u.id,t.code));
+    const pre=el.map(r=>num(scoreOf(r.u.id,t.code).pre)), post=el.map(r=>num(scoreOf(r.u.id,t.code).post));
+    return `<tr><td><b>${esc(t.code)}</b></td><td>${esc(t.title)}</td><td class="c">${dn.length}/${el.length}</td>
+      <td class="c">${el.length?Math.round(dn.length*100/el.length):0}%</td><td class="c">${avg(pre)}</td><td class="c">${avg(post)}</td></tr>`;
+  }).join('');
+
+  const mRows=rows.map(r=>`<tr><td><b>${esc(r.u.name)}</b><small>${esc(r.u.id)} · ${esc(r.u.role)}${r.u.unit?' · '+esc(r.u.unit):''}</small></td>
+    <td class="c">${r.done}/${r.el.length}</td>
+    ${topics.map(t=>{
+      if(!eligible(r.u,t)) return '<td class="na">·</td>';
+      const s=scoreOf(r.u.id,t.code), n=viewsOf(r.u.id,t.code);
+      const sc=(s.pre||s.post)?`<small>${esc(s.pre||'–')} / ${esc(s.post||'–')}</small>`:'';
+      return viewed(r.u.id,t.code) ? `<td class="ok">✓<small>${n} ครั้ง</small>${sc}</td>` : `<td class="no">✗${sc}</td>`;
+    }).join('')}</tr>`).join('');
+
+  document.getElementById('dashBody').innerHTML = `
+    <div class="stats">
+      <div class="stat"><b>${rows.length}</b><span>ผู้ใช้ตามตัวกรอง</span></div>
+      <div class="stat"><b>${full}</b><span>ดูครบทุกหัวข้อที่มีสิทธิ์</span></div>
+      <div class="stat"><b>${totEl?Math.round(totDone*100/totEl):0}%</b><span>ความคืบหน้าเฉลี่ย</span></div>
+      <div class="stat"><b>${totViews}</b><span>จำนวนครั้งที่เปิดดูออนไลน์</span></div>
+    </div>
+    <h3 class="sec">รายหัวข้อ</h3>
+    <div class="scroll"><table><thead><tr><th>รหัส</th><th>หัวข้อ</th><th class="c">ดูแล้ว</th><th class="c">%</th><th class="c">Pre เฉลี่ย</th><th class="c">Post เฉลี่ย</th></tr></thead>
+      <tbody>${tRows||'<tr><td colspan="6">ยังไม่มีหัวข้อที่เผยแพร่</td></tr>'}</tbody></table></div>
+    <h3 class="sec">รายคน <span class="hint">✓ ดูแล้ว · ✗ ยังไม่ดู · คะแนนแสดงเป็น Pre / Post</span></h3>
+    <div class="scroll" style="max-height:70vh"><table class="matrix"><thead><tr><th>ผู้ใช้</th><th class="c">ดูแล้ว</th>${topics.map(t=>`<th class="c">${esc(t.code)}</th>`).join('')}</tr></thead>
+      <tbody>${mRows||`<tr><td colspan="${topics.length+2}">ไม่พบผู้ใช้ตามตัวกรอง</td></tr>`}</tbody></table></div>`;
+}
+
+async function exportExcel(){
+  if (typeof XLSX==='undefined'){ toast('โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้าอีกครั้ง',true); return; }
+  const logs = await api('adminExportLogs', S.adminToken);
+  if (!logs) return;
+  const A=S.admin, topics=A.topics.filter(t=>t.published);
+  const uMap={}; A.users.forEach(u=>uMap[u.id]=u);
+  const tMap={}; A.topics.forEach(t=>tMap[t.code]=t);
+  const nm=id=>(uMap[id]||{}).name||'', un=id=>(uMap[id]||{}).unit||'';
+
+  const summary=[['รหัส','หัวข้อ','กลุ่ม','ผู้มีสิทธิ์','ดูแล้ว','%','Pre เฉลี่ย','Post เฉลี่ย']];
+  topics.forEach(t=>{
+    const el=A.users.filter(u=>eligible(u,t)); const dn=el.filter(u=>viewed(u.id,t.code)).length;
+    const a1=avg(el.map(u=>num(scoreOf(u.id,t.code).pre))), a2=avg(el.map(u=>num(scoreOf(u.id,t.code).post)));
+    summary.push([t.code,t.title,t.group,el.length,dn,el.length?Math.round(dn*100/el.length):0,a1==='–'?'':+a1,a2==='–'?'':+a2]);
+  });
+
+  const head=['SAP ID','ชื่อ-สกุล','ตำแหน่ง','หน่วยงาน','Role','ดูแล้ว','มีสิทธิ์'];
+  topics.forEach(t=>head.push(t.code+' สถานะ',t.code+' เปิดดู (ครั้ง)',t.code+' รอบสด',t.code+' Pre',t.code+' Post'));
+  const people=[head];
+  A.users.forEach(u=>{
+    const el=topics.filter(t=>eligible(u,t));
+    const row=[u.id,u.name,u.position,u.unit,u.role,el.filter(t=>viewed(u.id,t.code)).length,el.length];
+    topics.forEach(t=>{
+      if(!eligible(u,t)){ row.push('ไม่มีสิทธิ์','','','',''); return; }
+      const s=scoreOf(u.id,t.code);
+      row.push(viewed(u.id,t.code)?'ดูแล้ว':'ยังไม่ดู', viewsOf(u.id,t.code), attOf(u.id,t.code).join(', '), s.pre, s.post);
+    });
+    people.push(row);
+  });
+
+  const views=[['วันเวลา','SAP ID','ชื่อ-สกุล','หน่วยงาน','รหัส','หัวข้อ']].concat(
+    logs.views.map(r=>[r[0],r[1],nm(r[1]),un(r[1]),r[2],(tMap[r[2]]||{}).title||'']));
+  const att=[['วันเวลาที่บันทึก','SAP ID','ชื่อ-สกุล','หน่วยงาน','รหัส','หัวข้อ','รอบ','ผู้บันทึก']].concat(
+    logs.attendance.map(r=>[r[0],r[1],nm(r[1]),un(r[1]),r[2],(tMap[r[2]]||{}).title||'',r[3],r[4]]));
+  const scores=[['SAP ID','ชื่อ-สกุล','หน่วยงาน','รหัส','หัวข้อ','Pre','Post','แก้ไขล่าสุด','โดย']].concat(
+    logs.scores.map(r=>[r[0],nm(r[0]),un(r[0]),r[1],(tMap[r[1]]||{}).title||'',r[2],r[3],r[4],r[5]]));
+
+  const wb=XLSX.utils.book_new();
+  [['สรุปรายหัวข้อ',summary],['รายคน',people],['Log การเปิดดู',views],['รอบสด',att],['คะแนน',scores]]
+    .forEach(([n,d])=>XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(d), n));
+  const t=new Date(), p=n=>String(n).padStart(2,'0');
+  XLSX.writeFile(wb, `Phoenix_Report_${t.getFullYear()}${p(t.getMonth()+1)}${p(t.getDate())}.xlsx`);
+  toast('สร้างไฟล์ Excel แล้ว');
+}
+
+/* ---------- topics ---------- */
+function renderTopics(){
+  const A=S.admin;
+  document.getElementById('pane').innerHTML = `
+    <div class="filters"><button class="btn sm" id="addT">เพิ่มหัวข้อใหม่</button></div>
+    <div class="scroll"><table><thead><tr><th>ลำดับ</th><th>รหัส</th><th>หัวข้อ</th><th>กลุ่ม</th><th>วิดีโอ</th><th>สิทธิ์</th><th>สถานะ</th><th></th></tr></thead><tbody>
+    ${A.topics.map(t=>`<tr><td>${t.order===9999?'':t.order}</td><td><b>${esc(t.code)}</b></td><td>${esc(t.title)}</td><td>${esc(t.group)}</td>
+      <td>${t.hasVideo?'มี':'<span class="tag off">ยังไม่มี</span>'}</td>
+      <td>${ROLES.filter(r=>t.roles[r]).map(r=>`<span class="tag">${r}</span>`).join('')||'<span class="tag off">ไม่มี</span>'}</td>
+      <td>${t.published?'เผยแพร่':'<span class="tag off">ซ่อน</span>'}</td>
+      <td><button class="btn ghost sm" data-e="${esc(t.code)}">แก้ไข</button></td></tr>`).join('') || '<tr><td colspan="8">ยังไม่มีหัวข้อ</td></tr>'}
+    </tbody></table></div>`;
+  document.getElementById('addT').onclick=()=>editTopic(null);
+  document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>editTopic(b.dataset.e));
+}
+
+function editTopic(code){
+  const A=S.admin, isNew=!code;
+  const t = isNew ? {code:'',title:'',subtopics:'',description:'',group:'',order:'',speaker:'',youtube:'',doc:'',pre:'',post:'',
+                     roles:{'Pharmacist':true,'Pharmacy Assistant':true,'Staff':true},published:false,rounds:[]}
+                  : JSON.parse(JSON.stringify(topicByCode(code)));
+  let rounds = (t.rounds||[]).map(r=>({round:r.round,date:r.date,time:r.time}));
+  const groups=uniq(A.topics.map(x=>x.group));
+  const f=(id,label,val,hint,type)=>`<div><label for="${id}">${label} ${hint?`<span class="hint">${hint}</span>`:''}</label>
+    <input type="${type||'text'}" id="${id}" value="${esc(val)}"></div>`;
+
+  document.getElementById('pane').innerHTML = `
+    <button class="back" id="bk">‹ กลับไปรายการหัวข้อ</button>
+    <h3 class="sec">${isNew?'เพิ่มหัวข้อใหม่':'แก้ไข '+esc(t.code)}</h3>
+    <div class="form">
+      <div><label for="tCode">รหัสหัวข้อ <span class="hint">เช่น A10, B01 (แก้ภายหลังไม่ได้)</span></label>
+        <input type="text" id="tCode" value="${esc(t.code)}" ${isNew?'':'disabled'}></div>
+      ${f('tTitle','ชื่อหัวข้อ',t.title)}
+      <div><label for="tGroup">กลุ่ม/หมวด <span class="hint">เช่น สัปดาห์ 1</span></label>
+        <input type="text" id="tGroup" list="gl" value="${esc(t.group)}"><datalist id="gl">${groups.map(g=>`<option value="${esc(g)}">`).join('')}</datalist></div>
+      ${f('tOrder','ลำดับการแสดงผล',t.order===9999?'':t.order,'','number')}
+      ${f('tSpeaker','วิทยากร',t.speaker)}
+      ${f('tYt','ลิงก์ YouTube',t.youtube,'ลิงก์ของคลิป unlisted')}
+      <div class="full">${f('tDoc','ลิงก์เอกสารประกอบ',t.doc,'ถ้าอยู่ใน Google Drive ให้แชร์แบบ "ทุกคนที่มีลิงก์"')}</div>
+      ${f('tPre','ลิงก์ Pre-test',t.pre,'ใช้ลิงก์ pre-filled และใส่คำว่า SAPID ในช่อง SAP ID')}
+      ${f('tPost','ลิงก์ Post-test',t.post,'รูปแบบเดียวกับ Pre-test')}
+      <div class="full"><label for="tDesc">คำอธิบายย่อ</label><textarea id="tDesc">${esc(t.description)}</textarea></div>
+      <div class="full"><label for="tSub">หัวข้อที่บรรยาย</label><textarea id="tSub">${esc(t.subtopics)}</textarea></div>
+      <div class="full"><label>Role ที่เห็นหัวข้อนี้</label><div class="checks">
+        ${ROLES.map((r,i)=>`<label><input type="checkbox" id="role${i}" ${t.roles[r]?'checked':''}> ${r}</label>`).join('')}</div></div>
+      <div class="full"><label>รอบอบรมสด</label><div id="rr"></div>
+        <button class="btn ghost sm" id="addR" type="button">เพิ่มรอบ</button></div>
+      <div class="full"><div class="checks"><label><input type="checkbox" id="tPub" ${t.published?'checked':''}> เผยแพร่ให้ผู้ใช้เห็น</label></div></div>
+    </div>
+    <div class="rowbtn"><button class="btn" id="saveT">บันทึกหัวข้อ</button>
+      ${!isNew && A.level==='super' ? '<button class="btn danger" id="delT">ลบหัวข้อ</button>' : ''}</div>`;
+
+  const drawR=()=>{
+    document.getElementById('rr').innerHTML = rounds.length ? rounds.map((r,i)=>`<div class="rrow">
+      <input type="number" min="1" value="${esc(r.round)}" data-i="${i}" data-k="round" aria-label="รอบที่">
+      <input type="date" value="${esc(r.date)}" data-i="${i}" data-k="date" aria-label="วันที่">
+      <input type="text" value="${esc(r.time)}" data-i="${i}" data-k="time" placeholder="09:00–12:00" aria-label="เวลา">
+      <button type="button" data-rm="${i}" aria-label="ลบรอบ">✕</button></div>`).join('')
+      : '<div class="hint" style="margin-bottom:8px">ยังไม่มีรอบ</div>';
+    document.querySelectorAll('#rr input').forEach(x=>x.oninput=()=>{ rounds[x.dataset.i][x.dataset.k]=x.value; });
+    document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ rounds.splice(+b.dataset.rm,1); drawR(); });
+  };
+  drawR();
+  document.getElementById('addR').onclick=()=>{ rounds.push({round:rounds.reduce((m,r)=>Math.max(m,+r.round||0),0)+1,date:'',time:''}); drawR(); };
+  document.getElementById('bk').onclick=renderTopics;
+
+  document.getElementById('saveT').onclick=async()=>{
+    const v=id=>document.getElementById(id).value.trim();
+    const data={code:v('tCode'),title:v('tTitle'),group:v('tGroup'),order:v('tOrder'),speaker:v('tSpeaker'),youtube:v('tYt'),
+      doc:v('tDoc'),pre:v('tPre'),post:v('tPost'),description:document.getElementById('tDesc').value,subtopics:document.getElementById('tSub').value,
+      published:document.getElementById('tPub').checked,roles:{}};
+    ROLES.forEach((r,i)=>data.roles[r]=document.getElementById('role'+i).checked);
+    const ok=await api('adminSaveTopic', S.adminToken, data, rounds, isNew);
+    if(!ok) return;
+    toast('บันทึกหัวข้อแล้ว'); await openAdmin();
+  };
+  const del=document.getElementById('delT');
+  if (del) del.onclick=async()=>{
+    if(!confirm('ลบหัวข้อ '+t.code+' ? (ประวัติการดูและคะแนนยังเก็บไว้ในชีต)')) return;
+    const ok=await api('adminDeleteTopic', S.adminToken, t.code);
+    if(!ok) return;
+    toast('ลบหัวข้อแล้ว'); await openAdmin();
+  };
+  window.scrollTo(0,0);
+}
+
+/* ---------- scores ---------- */
+function renderScores(){
+  const A=S.admin;
+  if(!S.scoreCode || !topicByCode(S.scoreCode)) S.scoreCode=(A.topics.find(t=>t.pre||t.post)||A.topics[0]||{}).code||'';
+  document.getElementById('pane').innerHTML = `
+    <div class="filters">
+      <select id="sTopic">${A.topics.map(t=>`<option value="${esc(t.code)}" ${t.code===S.scoreCode?'selected':''}>${esc(t.code)} ${esc(t.title)}</option>`).join('')}</select>
+      <input type="search" id="sQ" placeholder="ค้นหาชื่อหรือ SAP ID">
+      <span class="hint">กรอกคะแนนครั้งที่ได้สูงสุด เช่น 8 หรือ 8/10</span>
+      <span style="flex:1"></span><button class="btn sm" id="sSave">บันทึกคะแนน</button>
+    </div><div id="sBody"></div>`;
+  const draw=()=>{
+    const t=topicByCode(S.scoreCode); if(!t){ document.getElementById('sBody').innerHTML='<div class="empty">ยังไม่มีหัวข้อ</div>'; return; }
+    const q=document.getElementById('sQ').value.trim().toLowerCase();
+    const us=A.users.filter(u=>eligible(u,t,false) && (!q||u.name.toLowerCase().indexOf(q)>-1||u.id.indexOf(q)>-1));
+    document.getElementById('sBody').innerHTML = `<div class="scroll" style="max-height:70vh"><table><thead><tr><th>SAP ID</th><th>ชื่อ-สกุล</th><th>หน่วยงาน</th><th class="c">ดูแล้ว</th><th>Pre</th><th>Post</th></tr></thead><tbody>
+      ${us.map(u=>{ const s=scoreOf(u.id,t.code); return `<tr><td>${esc(u.id)}</td><td>${esc(u.name)}</td><td>${esc(u.unit)}</td>
+        <td class="c">${viewed(u.id,t.code)?'✓':''}</td>
+        <td><input class="scoreinput" data-id="${esc(u.id)}" data-k="pre" value="${esc(s.pre)}" data-o="${esc(s.pre)}" aria-label="Pre ${esc(u.name)}"></td>
+        <td><input class="scoreinput" data-id="${esc(u.id)}" data-k="post" value="${esc(s.post)}" data-o="${esc(s.post)}" aria-label="Post ${esc(u.name)}"></td></tr>`; }).join('')
+        || '<tr><td colspan="6">ไม่พบผู้มีสิทธิ์ในหัวข้อนี้</td></tr>'}</tbody></table></div>`;
+    document.querySelectorAll('.scoreinput').forEach(x=>x.oninput=()=>x.classList.toggle('changed', x.value!==x.dataset.o));
+  };
+  document.getElementById('sTopic').onchange=e=>{ S.scoreCode=e.target.value; draw(); };
+  document.getElementById('sQ').oninput=draw;
+  document.getElementById('sSave').onclick=async()=>{
+    const changed={};
+    document.querySelectorAll('.scoreinput.changed').forEach(x=>{ changed[x.dataset.id]=true; });
+    const ids=Object.keys(changed);
+    if(!ids.length){ toast('ยังไม่มีคะแนนที่แก้ไข'); return; }
+    const list=ids.map(id=>({id,
+      pre:document.querySelector(`.scoreinput[data-id="${id}"][data-k="pre"]`).value.trim(),
+      post:document.querySelector(`.scoreinput[data-id="${id}"][data-k="post"]`).value.trim()}));
+    const r=await api('adminSaveScores', S.adminToken, S.scoreCode, list);
+    if(!r) return;
+    toast('บันทึกคะแนนแล้ว '+list.length+' คน'); await openAdmin();
+  };
+  draw();
+}
+
+/* ---------- attendance ---------- */
+function renderAttend(){
+  const A=S.admin;
+  if(!S.attCode || !topicByCode(S.attCode)) S.attCode=(A.topics[0]||{}).code||'';
+  const t=topicByCode(S.attCode);
+  const rounds=t?t.rounds:[];
+  if(!rounds.some(r=>String(r.round)===String(S.attRound))) S.attRound=rounds.length?String(rounds[0].round):'';
+  const recorded=t&&S.attRound ? A.users.filter(u=>attOf(u.id,t.code).indexOf(+S.attRound)>-1) : [];
+
+  document.getElementById('pane').innerHTML = `
+    <div class="filters">
+      <select id="aTopic">${A.topics.map(x=>`<option value="${esc(x.code)}" ${x.code===S.attCode?'selected':''}>${esc(x.code)} ${esc(x.title)}</option>`).join('')}</select>
+      <select id="aRound" ${rounds.length?'':'disabled'}>${rounds.length ? rounds.map(r=>`<option value="${r.round}" ${String(r.round)===S.attRound?'selected':''}>รอบ ${r.round} · ${esc(fmtDate(r.date))}</option>`).join('') : '<option>ยังไม่มีรอบ</option>'}</select>
+    </div>
+    ${ rounds.length ? `
+    <div class="section" style="margin-top:0">
+      <h4>วาง SAP ID ของผู้เข้าอบรมสด</h4>
+      <p class="hint" style="margin-top:0">วางได้ทีละหลายคน คั่นด้วยการขึ้นบรรทัดใหม่ เว้นวรรค หรือจุลภาค</p>
+      <textarea class="ids" id="aIds"></textarea>
+      <div class="rowbtn"><button class="btn" id="aCheck">ตรวจสอบรายชื่อ</button></div>
+      <div id="aPrev"></div>
+    </div>` : '<div class="empty">หัวข้อนี้ยังไม่มีรอบอบรมสด เพิ่มรอบได้ที่แท็บ "หัวข้อ"</div>' }
+    <h3 class="sec" style="margin-top:20px">บันทึกแล้วในรอบนี้ (${recorded.length} คน)</h3>
+    <div class="scroll"><table><thead><tr><th>SAP ID</th><th>ชื่อ-สกุล</th><th>หน่วยงาน</th></tr></thead><tbody>
+      ${recorded.map(u=>`<tr><td>${esc(u.id)}</td><td>${esc(u.name)}</td><td>${esc(u.unit)}</td></tr>`).join('')||'<tr><td colspan="3">ยังไม่มี</td></tr>'}
+    </tbody></table></div>`;
+
+  document.getElementById('aTopic').onchange=e=>{ S.attCode=e.target.value; S.attRound=''; renderAttend(); };
+  const rs=document.getElementById('aRound'); if(rs) rs.onchange=e=>{ S.attRound=e.target.value; renderAttend(); };
+  const ck=document.getElementById('aCheck');
+  if(ck) ck.onclick=async()=>{
+    const p=await api('adminPreviewAttendance', S.adminToken, S.attCode, S.attRound, document.getElementById('aIds').value);
+    if(!p) return;
+    const add=p.found.filter(x=>!x.already);
+    document.getElementById('aPrev').innerHTML = `
+      <div class="scroll" style="margin-top:14px"><table><thead><tr><th>SAP ID</th><th>ชื่อ-สกุล</th><th>หน่วยงาน</th><th>สถานะ</th></tr></thead><tbody>
+        ${p.found.map(x=>`<tr><td>${esc(x.id)}</td><td>${esc(x.name)}</td><td>${esc(x.unit)}</td><td>${x.already?'<span class="tag">บันทึกไว้แล้ว</span>':'จะบันทึก'}${x.active?'':' <span class="tag off">ปิดใช้งาน</span>'}</td></tr>`).join('')}
+        ${p.unknown.map(id=>`<tr><td>${esc(id)}</td><td colspan="3"><span class="tag off">ไม่พบในรายชื่อ</span></td></tr>`).join('')}
+      </tbody></table></div>
+      <div class="rowbtn"><button class="btn" id="aSave" ${add.length?'':'disabled'}>ยืนยันบันทึก ${add.length} คน</button></div>`;
+    const sv=document.getElementById('aSave');
+    if(sv) sv.onclick=async()=>{
+      const r=await api('adminSaveAttendance', S.adminToken, S.attCode, S.attRound, add.map(x=>x.id));
+      if(!r) return;
+      toast('บันทึกผู้เข้าอบรมสดแล้ว '+r.added+' คน'); await openAdmin();
+    };
+  };
+}
+
+/* ---------- start ---------- */
+(function init(){
+  S.userToken=load('ph_user'); S.adminToken=load('ph_admin');
+  if (new URLSearchParams(location.search).has('admin')) return S.adminToken ? openAdmin() : showAdminLogin();
+  S.userToken ? openHome() : showLogin();
+})();
+</script>
+</body>
+</html>
