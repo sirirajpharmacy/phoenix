@@ -196,7 +196,7 @@ async function api(fn, ...args){
 function showLogin(){
   app.innerHTML = `
   <div class="login"><form class="box" id="lf">
-    <h1>Phoenix<br><span>Intericare</span></h1>
+    <h1>Phoenix<br><span>Intellicare</span></h1>
     <p>วิดีโออบรมย้อนหลัง ฝ่ายเภสัชกรรม โรงพยาบาลศิริราช</p>
     <label for="sap">SAP ID หรือรหัสพนักงาน</label>
     <input id="sap" inputmode="numeric" autocomplete="off" required>
@@ -212,7 +212,7 @@ function showLogin(){
 }
 
 function userBar(){
-  return `<div class="bar"><div class="wrap"><div class="brand">Phoenix <span class="flame">Intericare</span><small>วิดีโออบรมย้อนหลัง</small></div>
+  return `<div class="bar"><div class="wrap"><div class="brand">Phoenix <span class="flame">Intellicare</span><small>วิดีโออบรมย้อนหลัง</small></div>
     <button id="logout">ออกจากระบบ</button></div></div>`;
 }
 function bindLogout(){ document.getElementById('logout').onclick=()=>{ S.userToken=null; store('ph_user',null); showLogin(); }; }
