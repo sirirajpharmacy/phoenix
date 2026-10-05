@@ -254,7 +254,7 @@ async function openTopic(code){
     <button class="back" id="back">‹ กลับไปหน้ารายการ</button>
     <div class="th"><span class="code">${esc(d.code)}</span><div><h2>${esc(d.title)}</h2>
       <div class="meta">${esc(d.group)}${d.speaker?' · วิทยากร '+esc(d.speaker):''}</div></div></div>
-    ${ d.videoId ? `<div class="video"><iframe src="https://www.youtube.com/embed/${esc(d.videoId)}?rel=0&playsinline=1"
+    ${ d.videoUrl ? `<div class="video"><iframe src="${esc(d.videoUrl)}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(d.title)}"></iframe></div>`
       : '<div class="novideo">ยังไม่มีวิดีโอสำหรับหัวข้อนี้</div>' }
     ${ acts.length ? `<div class="actions">${acts.join('')}</div>` : '' }
@@ -474,7 +474,7 @@ function editTopic(code){
         <input type="text" id="tGroup" list="gl" value="${esc(t.group)}"><datalist id="gl">${groups.map(g=>`<option value="${esc(g)}">`).join('')}</datalist></div>
       ${f('tOrder','ลำดับการแสดงผล',t.order===9999?'':t.order,'','number')}
       ${f('tSpeaker','วิทยากร',t.speaker)}
-      ${f('tYt','ลิงก์ YouTube',t.youtube,'ลิงก์ของคลิป unlisted')}
+      ${f('tYt','ลิงก์วิดีโอ',t.youtube,'YouTube (unlisted) หรือ Google Drive (แชร์แบบทุกคนที่มีลิงก์)')}
       <div class="full">${f('tDoc','ลิงก์เอกสารประกอบ',t.doc,'ถ้าอยู่ใน Google Drive ให้แชร์แบบ "ทุกคนที่มีลิงก์"')}</div>
       ${f('tPre','ลิงก์ Pre-test',t.pre,'ใช้ลิงก์ pre-filled และใส่คำว่า SAPID ในช่อง SAP ID')}
       ${f('tPost','ลิงก์ Post-test',t.post,'รูปแบบเดียวกับ Pre-test')}
